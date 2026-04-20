@@ -16,6 +16,18 @@ import {
   FolderOpen,
   User,
   CreditCard,
+  Command,
+  Filter,
+  LayoutGrid,
+  Bookmark,
+  Edit2,
+  Trash2,
+  Mail,
+  Download,
+  FileText,
+  Component,
+  Monitor,
+  Activity,
 } from 'lucide-react';
 import { 
   AreaChart, 
@@ -672,156 +684,169 @@ const TasksView = () => (
   </div>
 );
 
+const filesCategoryCards = [
+  { title: 'Product Specs', desc: 'Centralized documentation for feature requirements, user stories, and technical specs across releases.', icon: FileText, action: 'Connect' },
+  { title: 'Engineering Guidelines', desc: 'Best practices, coding standards, and architecture decisions to keep engineering consistent and scalable.', icon: Settings, action: 'Connect' },
+  { title: 'API References', desc: 'Endpoint definitions, payload structures, and authentication guides for internal and external API use.', icon: Component, action: 'Connect' },
+  { title: 'Design System', desc: 'Components, UI patterns, usage rules, and branding assets for maintaining visual and UX consistency.', icon: Monitor, action: 'Connect' },
+  { title: 'Release Notes', desc: 'Chronological logs of version changes, bug fixes, new features, and known issues.', icon: Activity, action: 'Connect' },
+  { title: 'Sprint Archives', desc: 'Past sprint plans, retrospectives, and key decisions tracking team velocity and iteration history.', icon: FolderOpen, action: 'Connect' }
+];
+
+const shortcutFolders = ['Research & Testing', 'Integrations & Webhooks', 'API Specs & References', 'Analytics & Metrics', 'Security & Compliance', 'Roadmaps & OKRs', 'Archived Projects'];
+
+const archiveFiles = [
+  { name: 'task-api-spec-v1.2.pdf', author: 'Sarah M.', size: '18 KB', date: 'June 28, 2025 - 3:45 PM' },
+  { name: 'sprint-27-retro-notes.md', author: 'Ahsan R.', size: '320 KB', date: 'July 1, 2025 - 11:02 AM' },
+  { name: 'figma-handoff-checklist.xlsx', author: 'Farah T.', size: '95 KB', date: 'June 25, 2025 - 9:15 AM' },
+  { name: 'real-time-sync-architecture.drawio', author: 'Mehedi H.', size: '1.2 MB', date: 'June 24, 2025 - 1:37 PM' },
+];
+
 const FilesView = () => (
-  <div className="flex-1 p-6 md:p-8 grid grid-cols-1 xl:grid-cols-4 gap-8 overflow-y-auto scrollbar-custom max-w-[1600px]">
-    <div className="xl:col-span-3 space-y-8">
-      {/* Top Buttons */}
-      <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-        <button className="bg-violet-600 hover:bg-violet-700 text-white px-6 py-2.5 rounded-xl font-semibold flex items-center justify-center gap-2 transition-all shadow-lg shadow-violet-600/20 w-full sm:w-auto">
-          <FolderOpen className="w-4 h-4" />
-          Create New Folder
-        </button>
-        <button className="text-[#8C8C8C] hover:text-white px-4 py-2.5 rounded-xl font-semibold flex items-center justify-center gap-2 transition-all w-full sm:w-auto">
-          <Share2 className="w-4 h-4" />
-          Upload
-        </button>
+  <div className="flex-1 p-6 md:p-8 overflow-y-auto scrollbar-custom max-w-[1600px] w-full">
+    {/* Docs Header Row */}
+    <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
+      <div>
+        <h3 className="text-[#8C8C8C] text-[10px] font-bold uppercase tracking-[0.2em] mb-1">Docs</h3>
+        <h2 className="text-3xl font-bold tracking-tight">Docs</h2>
       </div>
-
-      {/* Quick Access */}
-      <section>
-        <h3 className="text-sm font-bold uppercase tracking-widest text-[#8C8C8C] mb-6">Quick Access</h3>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
-          {folders.map((folder) => (
-            <motion.div 
-              whileHover={{ y: -4 }}
-              key={folder.id} 
-              className="dashboard-card group cursor-pointer"
-            >
-              <div className="flex items-start justify-between mb-4">
-                <div 
-                  className="p-2.5 rounded-xl bg-opacity-10"
-                  style={{ backgroundColor: `${folder.color}20`, color: folder.color }}
-                >
-                  <folder.icon className="w-6 h-6" />
-                </div>
-                <button className="p-1 text-[#4D4D4D] hover:text-white transition-colors">
-                  <ChevronDown className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity" />
-                </button>
-              </div>
-              <h4 className="font-semibold text-sm mb-1">{folder.name}</h4>
-              <span className="text-[10px] text-[#4D4D4D] font-bold">{folder.count}</span>
-            </motion.div>
-          ))}
-        </div>
-      </section>
-
-      {/* Recent Files */}
-      <section>
-        <div className="flex items-center justify-between mb-6">
-          <h3 className="text-sm font-bold uppercase tracking-widest text-[#8C8C8C]">Recent Files</h3>
-          <button className="text-[#4D4D4D] hover:text-white">
-            <Plus className="w-5 h-5 -rotate-90" />
-          </button>
-        </div>
-        <div className="dashboard-card p-0 overflow-hidden">
-          {recentFiles.map((file, i) => (
-            <div 
-              key={file.id} 
-              className={cn(
-                "flex items-center justify-between p-4 hover:bg-[#1A1A1A]/30 transition-colors cursor-pointer",
-                i !== recentFiles.length - 1 && "border-b border-[#262626]"
-              )}
-            >
-              <div className="flex items-center gap-4">
-                <div 
-                  className="p-2 rounded-lg bg-opacity-10"
-                  style={{ backgroundColor: `${file.color}20`, color: file.color }}
-                >
-                  <file.icon className="w-4 h-4" />
-                </div>
-                <span className="text-sm font-medium">{file.name}</span>
-              </div>
-              <div className="flex items-center gap-8">
-                <span className="text-xs font-bold text-[#4D4D4D]">{file.size}</span>
-                <button className="p-1 text-[#4D4D4D] hover:text-white transition-colors">
-                  <ChevronDown className="w-4 h-4 rotate-90" />
-                </button>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* Uploading Card */}
-      <div className="dashboard-card border-violet-500/30 bg-violet-500/5">
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-violet-600 rounded-xl flex items-center justify-center">
-              <Files className="w-5 h-5 text-white" />
-            </div>
-            <div>
-              <h4 className="text-sm font-bold">Uploading 1 file</h4>
-              <span className="text-[10px] text-[#8C8C8C] font-semibold">Summarizing documents...</span>
-            </div>
+      <div className="flex items-center gap-3 w-full md:w-auto">
+        <div className="relative group flex-1 md:flex-initial">
+          <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#8C8C8C]" />
+          <input type="text" placeholder="Search" className="bg-[#141414] border border-[#262626] rounded-xl pl-9 pr-12 py-2.5 text-sm w-full md:w-64 focus:border-violet-600 outline-none transition-colors" />
+          <div className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] text-[#8C8C8C] font-bold border border-[#262626] px-1.5 py-0.5 rounded flex items-center gap-0.5 bg-[#0D0D0D]">
+            <Command className="w-3 h-3"/> F
           </div>
-          <span className="text-sm font-bold">56%</span>
         </div>
-        <div className="h-1.5 bg-[#262626] rounded-full overflow-hidden">
-          <div className="h-full bg-violet-600 w-[56%] rounded-full" />
-        </div>
+        <button className="flex items-center gap-2 px-4 py-2.5 bg-[#141414] border border-[#262626] rounded-xl text-sm font-semibold hover:bg-[#1A1A1A] transition-colors text-[#8C8C8C] hover:text-white shrink-0">
+          <Filter className="w-4 h-4" />
+          Filter
+          <LayoutGrid className="w-4 h-4 ml-1" />
+        </button>
       </div>
     </div>
 
-    {/* Sidebar Storage */}
-    <div className="xl:col-span-1 space-y-8">
-      <div className="dashboard-card">
-        <h3 className="text-sm font-bold uppercase tracking-widest text-[#8C8C8C] mb-8">Storage Stats</h3>
+    <div className="grid grid-cols-1 xl:grid-cols-4 gap-8">
+      <div className="xl:col-span-3 space-y-8">
         
-        <div className="relative w-48 h-48 mx-auto mb-8 flex items-center justify-center">
-          <svg className="w-full h-full -rotate-90">
-            {/* Background */}
-            <circle cx="96" cy="96" r="70" stroke="#262626" strokeWidth="12" fill="transparent" />
-            {/* Segments */}
-            <circle cx="96" cy="96" r="70" stroke="#3B82F6" strokeWidth="12" strokeDasharray="440" strokeDashoffset="110" fill="transparent" strokeLinecap="round" />
-            <circle cx="96" cy="96" r="70" stroke="#F97316" strokeWidth="12" strokeDasharray="440" strokeDashoffset="280" fill="transparent" strokeLinecap="round" />
-            <circle cx="96" cy="96" r="70" stroke="#22C55E" strokeWidth="12" strokeDasharray="440" strokeDashoffset="380" fill="transparent" strokeLinecap="round" />
-          </svg>
-          <div className="absolute inset-0 flex flex-col items-center justify-center">
-            <span className="text-2xl font-bold">53%</span>
-            <span className="text-[10px] text-[#4D4D4D] font-bold">USED</span>
-          </div>
-        </div>
-
-        <div className="flex gap-2 h-20 items-end justify-center mb-8">
-          {[40, 70, 45, 90, 60].map((h, i) => (
-            <div key={i} className="flex-1 bg-[#262626] rounded-t-sm relative group overflow-hidden">
-              <motion.div 
-                initial={{ height: 0 }}
-                animate={{ height: `${h}%` }}
-                className="absolute bottom-0 left-0 right-0 bg-violet-600/50 group-hover:bg-violet-500 transition-colors"
-              />
-            </div>
-          ))}
-        </div>
-
-        <div className="space-y-4">
-          {storageData.map((item) => (
-            <div key={item.name} className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: item.color }} />
-                <span className="text-xs font-semibold text-[#8C8C8C]">{item.name}</span>
+        {/* Category Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {filesCategoryCards.map((card, i) => (
+            <motion.div 
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: i * 0.05 }}
+              key={i} 
+              className="dashboard-card p-5 hover:border-[#4D4D4D] transition-colors group flex flex-col items-start justify-between min-h-[180px]"
+            >
+              <div>
+                <div className="w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center mb-4 text-[#E5E5E5]">
+                  <card.icon className="w-4 h-4" />
+                </div>
+                <h4 className="text-xs font-bold mb-2">{card.title}</h4>
+                <p className="text-[10px] text-[#8C8C8C] leading-relaxed mb-6 line-clamp-3">{card.desc}</p>
               </div>
-              <span className="text-xs font-bold">{item.value}%</span>
-            </div>
+              <button className="px-4 py-1.5 rounded-lg border border-[#262626] bg-[#141414] text-[10px] font-bold text-[#8C8C8C] group-hover:text-white group-hover:border-[#4D4D4D] transition-colors">
+                {card.action}
+              </button>
+            </motion.div>
           ))}
         </div>
 
-        <div className="mt-8 pt-8 border-t border-[#262626] flex items-center justify-between">
-          <div>
-            <p className="text-[10px] text-[#4D4D4D] font-bold uppercase tracking-widest mb-1">Available Space</p>
-            <h4 className="text-xl font-bold">75GB</h4>
+        {/* Shortcuts */}
+        <div>
+          <h3 className="text-sm font-bold mb-4">Shortcut</h3>
+          <div className="flex gap-4 overflow-x-auto scrollbar-custom pb-4">
+            {shortcutFolders.map((sf, i) => (
+              <motion.div 
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.2 + (i * 0.05) }}
+                key={i} 
+                className="flex flex-col items-center gap-3 w-[100px] shrink-0 cursor-pointer group"
+              >
+                <div className="w-20 h-16 relative text-[#262626] group-hover:text-[#333] transition-colors">
+                  <svg viewBox="0 0 24 24" fill="currentColor" className="w-full h-full drop-shadow-md">
+                    <path d="M2.25 6C2.25 4.75736 3.25736 3.75 4.5 3.75H9.41421C9.94464 3.75 10.4533 3.96071 10.8284 4.33579L12.5 6H19.5C20.7426 6 21.75 7.00736 21.75 8.25V18C21.75 19.2426 20.7426 20.25 19.5 20.25H4.5C3.25736 20.25 2.25 19.2426 2.25 18V6Z" />
+                  </svg>
+                </div>
+                <p className="text-[10px] text-[#8C8C8C] text-center font-semibold leading-tight group-hover:text-white transition-colors px-1">{sf}</p>
+              </motion.div>
+            ))}
           </div>
-          <div className="w-10 h-10 rounded-full border-2 border-violet-500 border-t-transparent animate-spin-slow" />
+        </div>
+
+        {/* Charts */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="lg:col-span-2 dashboard-card p-6 flex flex-col">
+            <h3 className="text-sm font-semibold mb-6">Documentation Engagement Trend</h3>
+            <div className="flex-1 h-[200px] w-full min-h-[200px]">
+              <ResponsiveContainer width="100%" height="100%">
+                <AreaChart data={chartData}>
+                  <defs>
+                    <linearGradient id="colorDocs" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#ef4444" stopOpacity={0.4}/>
+                      <stop offset="95%" stopColor="#ef4444" stopOpacity={0}/>
+                    </linearGradient>
+                  </defs>
+                  <Tooltip 
+                    contentStyle={{ backgroundColor: '#1A1A1A', borderColor: '#262626', borderRadius: '12px', fontSize: '12px' }}
+                    itemStyle={{ color: '#fff' }}
+                  />
+                  <Area type="monotone" dataKey="value" stroke="#ef4444" strokeWidth={2} fillOpacity={1} fill="url(#colorDocs)" />
+                </AreaChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+          
+          <div className="lg:col-span-1 dashboard-card p-6 flex flex-col items-center justify-between">
+            <h3 className="text-sm font-semibold w-full text-left mb-6">Views & Edits by Week</h3>
+            <div className="relative w-40 h-40 flex-shrink-0 my-auto">
+              <svg className="w-full h-full -rotate-90">
+                <circle cx="80" cy="80" r="60" stroke="#262626" strokeWidth="20" fill="transparent" />
+                <circle cx="80" cy="80" r="60" stroke="#E5E5E5" strokeWidth="20" strokeDasharray="377" strokeDashoffset="94" fill="transparent" strokeLinecap="round" />
+              </svg>
+            </div>
+          </div>
+        </div>
+        
+      </div>
+
+      {/* Right Sidebar - Archives */}
+      <div className="xl:col-span-1 border border-[#262626] rounded-2xl bg-[#0a0a0a]/50 p-6 flex flex-col h-full">
+        <div className="flex items-center justify-between mb-8 pb-4 border-b border-[#262626]">
+          <div className="flex items-center gap-3 text-[#8C8C8C]">
+            <button className="hover:text-white transition-colors bg-[#141414] border border-[#262626] p-2 rounded-lg"><Bookmark className="w-4 h-4" /></button>
+            <button className="hover:text-white transition-colors"><Edit2 className="w-4 h-4" /></button>
+            <button className="hover:text-white transition-colors"><Trash2 className="w-4 h-4" /></button>
+          </div>
+          <div className="flex items-center gap-3 text-[#8C8C8C]">
+            <button className="hover:text-white transition-colors"><Mail className="w-4 h-4" /></button>
+            <button className="hover:text-white transition-colors"><Download className="w-4 h-4" /></button>
+          </div>
+        </div>
+
+        <h3 className="text-base font-bold mb-2">Sprint Archives</h3>
+        <p className="text-[11px] text-[#8C8C8C] mb-8 leading-relaxed">
+          Past sprint plans, retrospectives, and key decisions tracking team velocity and iteration history.
+        </p>
+
+        <div className="space-y-4 flex-1">
+          {archiveFiles.map((file, i) => (
+            <div key={i} className="pt-4 border-t border-[#262626] group">
+              <h4 className="text-xs font-semibold mb-3 group-hover:text-violet-400 transition-colors cursor-pointer leading-tight">
+                {file.name}
+              </h4>
+              <div className="text-[10px] text-[#8C8C8C] space-y-1.5 mb-4">
+                <p>Shared By: <span className="text-[#E5E5E5] font-medium">{file.author}</span></p>
+                <p>Size: {file.size}</p>
+                <p>Created Time: {file.date}</p>
+              </div>
+              <button className="px-4 py-1.5 bg-[#141414] border border-[#262626] rounded-lg text-[10px] font-bold text-[#A3A3A3] hover:text-white hover:border-[#4D4D4D] transition-colors">
+                Details
+              </button>
+            </div>
+          ))}
         </div>
       </div>
     </div>
