@@ -685,21 +685,21 @@ const TasksView = () => (
 );
 
 const filesCategoryCards = [
-  { title: 'Product Specs', desc: 'Centralized documentation for feature requirements, user stories, and technical specs across releases.', icon: FileText, action: 'Connect' },
-  { title: 'Engineering Guidelines', desc: 'Best practices, coding standards, and architecture decisions to keep engineering consistent and scalable.', icon: Settings, action: 'Connect' },
-  { title: 'API References', desc: 'Endpoint definitions, payload structures, and authentication guides for internal and external API use.', icon: Component, action: 'Connect' },
-  { title: 'Design System', desc: 'Components, UI patterns, usage rules, and branding assets for maintaining visual and UX consistency.', icon: Monitor, action: 'Connect' },
-  { title: 'Release Notes', desc: 'Chronological logs of version changes, bug fixes, new features, and known issues.', icon: Activity, action: 'Connect' },
-  { title: 'Sprint Archives', desc: 'Past sprint plans, retrospectives, and key decisions tracking team velocity and iteration history.', icon: FolderOpen, action: 'Connect' }
+  { title: 'Course Syllabi', desc: 'Centralized documentation for course requirements, grading scales, and reading lists across semesters.', icon: FileText, action: 'Connect' },
+  { title: 'Study Guides', desc: 'Comprehensive guides, key terms, and module summaries to keep your learning on track before exams.', icon: Settings, action: 'Connect' },
+  { title: 'Research Papers', desc: 'Academic papers, scholarly articles, and peer-reviewed references for your term projects.', icon: Component, action: 'Connect' },
+  { title: 'Lecture Notes', desc: 'Organized notes, whiteboard screen captures, and class insights sorted by week and topic.', icon: Monitor, action: 'Connect' },
+  { title: 'Assignment Briefs', desc: 'Chronological list of homework tasks, project descriptions, and impending due dates.', icon: Activity, action: 'Connect' },
+  { title: 'Past Exams', desc: 'Previous test materials, quizzes, and revision history to track performance and knowledge gaps.', icon: FolderOpen, action: 'Connect' }
 ];
 
-const shortcutFolders = ['Research & Testing', 'Integrations & Webhooks', 'API Specs & References', 'Analytics & Metrics', 'Security & Compliance', 'Roadmaps & OKRs', 'Archived Projects'];
+const shortcutFolders = ['Mathematics', 'Physics', 'Literature', 'Computer Science', 'History', 'Biology', 'Archived Classes'];
 
 const archiveFiles = [
-  { name: 'task-api-spec-v1.2.pdf', author: 'Sarah M.', size: '18 KB', date: 'June 28, 2025 - 3:45 PM' },
-  { name: 'sprint-27-retro-notes.md', author: 'Ahsan R.', size: '320 KB', date: 'July 1, 2025 - 11:02 AM' },
-  { name: 'figma-handoff-checklist.xlsx', author: 'Farah T.', size: '95 KB', date: 'June 25, 2025 - 9:15 AM' },
-  { name: 'real-time-sync-architecture.drawio', author: 'Mehedi H.', size: '1.2 MB', date: 'June 24, 2025 - 1:37 PM' },
+  { name: 'calculus-midterm-review.pdf', author: 'Dr. Sarah M.', size: '18 KB', date: 'June 28, 2025 - 3:45 PM' },
+  { name: 'history-chapter-4-notes.md', author: 'Ahsan R.', size: '320 KB', date: 'July 1, 2025 - 11:02 AM' },
+  { name: 'chemistry-lab-results.xlsx', author: 'Farah T.', size: '95 KB', date: 'June 25, 2025 - 9:15 AM' },
+  { name: 'biology-cell-structure.drawio', author: 'Prof. Mehedi H.', size: '1.2 MB', date: 'June 24, 2025 - 1:37 PM' },
 ];
 
 const FilesView = () => (
@@ -765,9 +765,15 @@ const FilesView = () => (
                 key={i} 
                 className="flex flex-col items-center gap-3 w-[100px] shrink-0 cursor-pointer group"
               >
-                <div className="w-20 h-16 relative text-[#262626] group-hover:text-[#333] transition-colors">
-                  <svg viewBox="0 0 24 24" fill="currentColor" className="w-full h-full drop-shadow-md">
-                    <path d="M2.25 6C2.25 4.75736 3.25736 3.75 4.5 3.75H9.41421C9.94464 3.75 10.4533 3.96071 10.8284 4.33579L12.5 6H19.5C20.7426 6 21.75 7.00736 21.75 8.25V18C21.75 19.2426 20.7426 20.25 19.5 20.25H4.5C3.25736 20.25 2.25 19.2426 2.25 18V6Z" />
+                <div className="w-20 h-16 relative text-[#3a3a3a] group-hover:text-[#4a4a4a] transition-colors drop-shadow-xl">
+                  {/* Exact macOS-like Folder Shape SVG */}
+                  <svg viewBox="0 0 100 80" className="w-full h-full">
+                    {/* Back folder flap and tab */}
+                    <path d="M5,20 C5,14.477 9.477,10 15,10 L35,10 C38.31,10 41.31,11.66 43.12,14.38 L48,21.6 C49.2,23.4 51.2,24.5 53.4,24.5 L85,24.5 C90.523,24.5 95,28.977 95,34.5 L95,70 C95,75.523 90.523,80 85,80 L15,80 C9.477,80 5,75.523 5,70 L5,20 Z" fill="currentColor" />
+                    {/* Inner shading to separate flaps */}
+                    <path d="M5,32 C5,32 95,32 95,32 L95,80 L5,80 Z" fill="#2a2a2a" opacity="0.3" />
+                    {/* Front folder flap */}
+                    <path d="M5,35 C5,32.238 7.238,30 10,30 L90,30 C92.761,30 95,32.238 95,35 L95,70 C95,75.523 90.523,80 85,80 L15,80 C9.477,80 5,75.523 5,70 L5,35 Z" fill="currentColor" />
                   </svg>
                 </div>
                 <p className="text-[10px] text-[#8C8C8C] text-center font-semibold leading-tight group-hover:text-white transition-colors px-1">{sf}</p>
@@ -779,7 +785,7 @@ const FilesView = () => (
         {/* Charts */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2 dashboard-card p-6 flex flex-col">
-            <h3 className="text-sm font-semibold mb-6">Documentation Engagement Trend</h3>
+            <h3 className="text-sm font-semibold mb-6">Study Session Trend</h3>
             <div className="flex-1 h-[200px] w-full min-h-[200px]">
               <ResponsiveContainer width="100%" height="100%">
                 <AreaChart data={chartData}>
@@ -826,9 +832,9 @@ const FilesView = () => (
           </div>
         </div>
 
-        <h3 className="text-base font-bold mb-2">Sprint Archives</h3>
+        <h3 className="text-base font-bold mb-2">Archive Materials</h3>
         <p className="text-[11px] text-[#8C8C8C] mb-8 leading-relaxed">
-          Past sprint plans, retrospectives, and key decisions tracking team velocity and iteration history.
+          Past exam papers, revision notes, and key decisions tracking study history.
         </p>
 
         <div className="space-y-4 flex-1">
