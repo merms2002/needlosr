@@ -28,6 +28,7 @@ import {
 } from 'recharts';
 import { motion } from 'motion/react';
 import { cn } from './lib/utils';
+import { SignInView } from './components/auth/SignInView';
 
 // --- Types ---
 interface MenuItem {
@@ -232,21 +233,45 @@ const calendarDays = Array.from({ length: 15 }, (_, i) => (i + 5).toString().pad
 
 // --- Components ---
 
-const Sidebar = ({ activeId, onViewChange }: { activeId: string, onViewChange: (id: string) => void }) => (
-  <aside className="w-64 border-r border-[#262626] h-screen sticky top-0 flex flex-col p-6 overflow-y-auto hidden lg:flex">
-    <div className="flex items-center gap-3 mb-12">
-      <div className="w-8 h-8 bg-violet-600 rounded-lg flex items-center justify-center">
-        <LayoutDashboard className="w-5 h-5 text-white" />
+const Sidebar = ({ activeId, onViewChange, isOpenMobile, onCloseMobile }: { activeId: string, onViewChange: (id: string) => void, isOpenMobile?: boolean, onCloseMobile?: () => void }) => (
+  <>
+    {/* Mobile Overlay */}
+    {isOpenMobile && (
+      <div 
+        className="fixed inset-0 bg-black/60 z-40 lg:hidden backdrop-blur-sm"
+        onClick={onCloseMobile}
+      />
+    )}
+    
+    <aside className={cn(
+      "fixed inset-y-0 left-0 z-50 w-64 bg-[#0D0D0D] border-r border-[#262626] flex flex-col p-6 transition-transform duration-300 lg:relative lg:translate-x-0 shrink-0",
+      isOpenMobile ? "translate-x-0" : "-translate-x-full"
+    )}>
+      <div className="flex items-center justify-between mb-12">
+        <div className="flex items-center gap-3">
+          <div className="w-8 h-8 bg-violet-600 rounded-lg flex items-center justify-center">
+            <LayoutDashboard className="w-5 h-5 text-white" />
+          </div>
+          <span className="font-bold text-xl tracking-tight">Dashnect</span>
+        </div>
+        
+        <button 
+          onClick={onCloseMobile}
+          className="lg:hidden p-2 -mr-2 text-[#8C8C8C] hover:text-white transition-colors"
+        >
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
       </div>
-      <span className="font-bold text-xl tracking-tight">Dashnect</span>
-    </div>
 
-    <nav className="flex-1 space-y-2">
-      {menuItems.map((item) => (
-        <button
-          key={item.id}
-          onClick={() => onViewChange(item.id)}
-          className={cn(
+      <nav className="flex-1 space-y-2">
+        {menuItems.map((item) => (
+          <button
+            key={item.id}
+            onClick={() => {
+              onViewChange(item.id);
+              if (onCloseMobile) onCloseMobile();
+            }}
+            className={cn(
             "sidebar-link w-full text-left",
             activeId === item.id && "active"
           )}
@@ -264,17 +289,28 @@ const Sidebar = ({ activeId, onViewChange }: { activeId: string, onViewChange: (
       </button>
     </div>
   </aside>
+  </>
 );
 
-const Header = ({ title }: { title: string }) => {
+const Header = ({ title, onMenuToggle }: { title: string, onMenuToggle?: () => void }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <header className="h-20 border-b border-[#262626] flex items-center justify-between px-8 sticky top-0 bg-[#0D0D0D] z-50">
-      <h1 className="text-2xl font-semibold">{title}</h1>
+    <header className="h-20 border-b border-[#262626] flex items-center justify-between px-6 lg:px-8 sticky top-0 bg-[#0D0D0D] z-50">
+      <div className="flex items-center gap-4">
+        <button 
+          onClick={onMenuToggle}
+          className="lg:hidden p-2 -ml-2 text-[#8C8C8C] hover:text-white transition-colors rounded-xl hover:bg-[#1A1A1A]"
+        >
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        </button>
+        <h1 className="text-xl md:text-2xl font-semibold">{title}</h1>
+      </div>
       
-      <div className="flex items-center gap-6">
-        <div className="relative group hidden sm:block">
+      <div className="flex items-center gap-4 lg:gap-6">
+        <div className="relative group hidden lg:block">
           <Search className="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-[#8C8C8C] group-focus-within:text-white transition-colors" />
           <input 
             type="text" 
@@ -360,7 +396,7 @@ const StatCardLarge = ({ icon: Icon, title, subValue, percentage }: any) => (
   <motion.div 
     initial={{ opacity: 0, y: 20 }}
     animate={{ opacity: 1, y: 0 }}
-    className="dashboard-card flex-1 flex flex-col justify-between min-w-[280px]"
+    className="dashboard-card flex-1 flex flex-col justify-between min-w-0"
   >
     <div className="flex items-center justify-between mb-4">
       <div className="p-3 bg-violet-600/10 rounded-xl">
@@ -554,10 +590,10 @@ const ProjectCard = () => (
 );
 
 const TasksView = () => (
-  <div className="flex-1 p-8 overflow-auto scrollbar-custom">
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 pb-8 items-start">
+  <div className="flex-1 p-6 md:p-8 overflow-x-auto scrollbar-custom h-full">
+    <div className="flex flex-nowrap md:grid md:grid-cols-2 lg:grid-cols-4 gap-6 pb-8 items-start min-w-[max-content] md:min-w-0">
       {Object.entries(kanbanData).map(([column, tasks], columnIndex) => (
-        <div key={column} className="flex flex-col gap-6">
+        <div key={column} className="flex flex-col gap-6 w-[300px] md:w-auto shrink-0">
           <div className="flex items-center gap-2 mb-2">
             <div 
               className={cn(
@@ -637,15 +673,15 @@ const TasksView = () => (
 );
 
 const FilesView = () => (
-  <div className="flex-1 p-8 grid grid-cols-1 xl:grid-cols-4 gap-8 overflow-y-auto scrollbar-custom max-w-[1600px]">
+  <div className="flex-1 p-6 md:p-8 grid grid-cols-1 xl:grid-cols-4 gap-8 overflow-y-auto scrollbar-custom max-w-[1600px]">
     <div className="xl:col-span-3 space-y-8">
       {/* Top Buttons */}
-      <div className="flex items-center gap-4">
-        <button className="bg-violet-600 hover:bg-violet-700 text-white px-6 py-2.5 rounded-xl font-semibold flex items-center gap-2 transition-all shadow-lg shadow-violet-600/20">
+      <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+        <button className="bg-violet-600 hover:bg-violet-700 text-white px-6 py-2.5 rounded-xl font-semibold flex items-center justify-center gap-2 transition-all shadow-lg shadow-violet-600/20 w-full sm:w-auto">
           <FolderOpen className="w-4 h-4" />
           Create New Folder
         </button>
-        <button className="text-[#8C8C8C] hover:text-white px-4 py-2.5 rounded-xl font-semibold flex items-center gap-2 transition-all">
+        <button className="text-[#8C8C8C] hover:text-white px-4 py-2.5 rounded-xl font-semibold flex items-center justify-center gap-2 transition-all w-full sm:w-auto">
           <Share2 className="w-4 h-4" />
           Upload
         </button>
@@ -793,8 +829,8 @@ const FilesView = () => (
 );
 
 const TimelineView = () => (
-  <div className="flex-1 p-8 space-y-6">
-    <div className="flex items-center justify-between">
+  <div className="flex-1 p-6 md:p-8 space-y-6">
+    <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
       <div className="flex items-center gap-4">
         <div className="w-12 h-12 bg-white/5 rounded-xl flex items-center justify-center overflow-hidden">
           <img 
@@ -923,7 +959,7 @@ const TimelineView = () => (
 );
 
 const OverviewView = () => (
-  <div className="flex-1 p-8 space-y-8 animate-in fade-in duration-700 max-w-[1600px]">
+  <div className="flex-1 p-6 md:p-8 space-y-8 animate-in fade-in duration-700 max-w-[1600px]">
     {/* Header Row */}
     <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
       <div className="md:col-span-1 xl:col-span-2">
@@ -960,7 +996,7 @@ const OverviewView = () => (
 );
 
 const SettingsView = () => (
-  <div className="p-8 space-y-8 animate-in fade-in duration-500 max-w-4xl mx-auto w-full">
+  <div className="p-6 md:p-8 space-y-8 animate-in fade-in duration-500 max-w-4xl mx-auto w-full">
     <div className="flex flex-col gap-6">
       <motion.div 
         initial={{ opacity: 0, y: 10 }}
@@ -1048,25 +1084,41 @@ const SettingsView = () => (
 // --- Main Page ---
 
 export default function App() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [activeTab, setActiveTab] = useState('overview');
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  if (!isAuthenticated) {
+    return <SignInView onSkip={() => setIsAuthenticated(true)} />;
+  }
 
   return (
-    <div className="flex min-h-screen bg-[#0D0D0D] text-white">
-      <Sidebar activeId={activeTab} onViewChange={setActiveTab} />
+    <div className="flex shrink-0 h-screen overflow-hidden bg-[#0D0D0D] text-white">
+      <Sidebar 
+        activeId={activeTab} 
+        onViewChange={setActiveTab} 
+        isOpenMobile={isMobileMenuOpen}
+        onCloseMobile={() => setIsMobileMenuOpen(false)}
+      />
       
-      <main className="flex-1 flex flex-col min-w-0">
-        <Header title={menuItems.find(i => i.id === activeTab)?.label || 'Overview'} />
+      <main className="flex-1 flex flex-col min-w-0 h-screen overflow-hidden">
+        <Header 
+          title={menuItems.find(i => i.id === activeTab)?.label || 'Overview'} 
+          onMenuToggle={() => setIsMobileMenuOpen(true)}
+        />
         
-        {activeTab === 'overview' ? <OverviewView /> : null}
-        {activeTab === 'timeline' ? <TimelineView /> : null}
-        {activeTab === 'tasks' ? <TasksView /> : null}
-        {activeTab === 'files' ? <FilesView /> : null}
-        {activeTab === 'settings' ? <SettingsView /> : null}
-        {activeTab !== 'overview' && activeTab !== 'timeline' && activeTab !== 'tasks' && activeTab !== 'files' && activeTab !== 'settings' ? (
-          <div className="flex-1 flex items-center justify-center text-[#4D4D4D] text-sm italic">
-            This module is coming soon...
-          </div>
-        ) : null}
+        <div className="flex-1 overflow-y-auto w-full">
+          {activeTab === 'overview' ? <OverviewView /> : null}
+          {activeTab === 'timeline' ? <TimelineView /> : null}
+          {activeTab === 'tasks' ? <TasksView /> : null}
+          {activeTab === 'files' ? <FilesView /> : null}
+          {activeTab === 'settings' ? <SettingsView /> : null}
+          {activeTab !== 'overview' && activeTab !== 'timeline' && activeTab !== 'tasks' && activeTab !== 'files' && activeTab !== 'settings' ? (
+            <div className="flex-1 h-full flex items-center justify-center text-[#4D4D4D] text-sm italic">
+              This module is coming soon...
+            </div>
+          ) : null}
+        </div>
       </main>
     </div>
   );
