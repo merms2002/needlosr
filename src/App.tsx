@@ -33,6 +33,7 @@ import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 import { OverviewView } from './components/overview/OverviewView';
 import { motion } from 'motion/react';
 import { cn } from './lib/utils';
+import { LandingPage } from './components/landing/LandingPage';
 import { SignInView } from './components/auth/SignInView';
 
 // --- Types ---
@@ -878,12 +879,16 @@ const SettingsView = () => (
 // --- Main Page ---
 
 export default function App() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [viewState, setViewState] = useState<'landing' | 'signIn' | 'dashboard'>('landing');
   const [activeTab, setActiveTab] = useState('overview');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  if (!isAuthenticated) {
-    return <SignInView onSkip={() => setIsAuthenticated(true)} />;
+  if (viewState === 'landing') {
+    return <LandingPage onEnter={() => setViewState('signIn')} />;
+  }
+
+  if (viewState === 'signIn') {
+    return <SignInView onSkip={() => setViewState('dashboard')} />;
   }
 
   return (
