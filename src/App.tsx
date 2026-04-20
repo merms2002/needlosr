@@ -270,7 +270,7 @@ const Header = ({ title }: { title: string }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <header className="h-20 border-b border-[#262626] flex items-center justify-between px-8 sticky top-0 bg-[#0D0D0D]/80 backdrop-blur-md z-40">
+    <header className="h-20 border-b border-[#262626] flex items-center justify-between px-8 sticky top-0 bg-[#0D0D0D] z-50">
       <h1 className="text-2xl font-semibold">{title}</h1>
       
       <div className="flex items-center gap-6">
